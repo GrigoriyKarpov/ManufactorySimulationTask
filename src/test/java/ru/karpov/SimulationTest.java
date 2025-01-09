@@ -43,7 +43,7 @@ public class SimulationTest {
   }
 
   @Test
-  public void updatePCStateTest() {
+  public void workerAvailableTest() {
     pc.updateState(BigDecimal.ONE);
     assertFalse(ws.isWorkerAvailable(), "Must be no workers");
   }
