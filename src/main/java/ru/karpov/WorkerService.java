@@ -1,7 +1,9 @@
 package ru.karpov;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class WorkerService {
   private long workers;
@@ -10,11 +12,13 @@ public class WorkerService {
     workers++;
   };
 
-  public void activateWorker() throws Exception {
+  public void activateWorker() {
     if (workers == 0)
-      throw new Exception();
+      throw new RuntimeException();
     workers--;
   }
+
+
 
   public boolean isWorkerAvailable() {
     return workers > 0;

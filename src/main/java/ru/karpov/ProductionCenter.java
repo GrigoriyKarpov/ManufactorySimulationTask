@@ -38,7 +38,7 @@ public class ProductionCenter {
       this.currentWork.add(NO_WORK);
   }
 
-  public void updateState(BigDecimal timeUnit) throws Exception {
+  public void updateState(BigDecimal timeUnit) {
     // Update the status of parts in processing
     for (int i = 0; i < maxWorkersCount; i++) {
       if (currentWork.get(i).compareTo(NO_WORK) == 0 && workerService.isWorkerAvailable() && buffer > 0) {
@@ -87,11 +87,11 @@ public class ProductionCenter {
       initPC.updateWorks();
   }
 
-  private void startNewWork(int i) throws Exception {
+  private void startNewWork(int i) {
     BigDecimal bufTime = !timeBuffer.isEmpty() ? timeBuffer.get(0) : BigDecimal.ZERO;
     if (bufTime.compareTo(performance) > 0) {
       // TODO ...
-      throw new Exception();
+      throw new UpdateStateException("The time in the buffer must not exceed the performance value");
     }
     currentWork.set(i, BigDecimal.ZERO.add(bufTime));
     buffer--;
@@ -100,7 +100,13 @@ public class ProductionCenter {
       timeBuffer.remove(0);
   }
 
-  private void updateWorks() throws Exception {
+  public class UpdateStateException extends RuntimeException {
+    public UpdateStateException(String message) {
+      super(message);
+    }
+  }
+
+  private void updateWorks() {
     for (int i = 0; i < maxWorkersCount; i++)
       if (currentWork.get(i).equals(NO_WORK) && workerService.isWorkerAvailable() && buffer > 0)
         startNewWork(i);

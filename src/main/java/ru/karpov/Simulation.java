@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class Simulation {
-  @Setter
-  BigDecimal timeUnit = new BigDecimal(1); // Time unit for simulation
   // Format for outputting decimal numbers
   private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
   {
@@ -27,6 +25,7 @@ public class Simulation {
 
   // Run simulation for a given dataset in .xlsx file
   public void run(String filePath) {
+    System.out.println("Running simulation for \"" + filePath + "\"");
     TaskDataReader tdr;
     try {
       tdr = new TaskDataReader(filePath);
@@ -48,12 +47,8 @@ public class Simulation {
         .append("BufferCount")
         .append(newLine);
 
-    for (BigDecimal currentTime = new BigDecimal(0); !initPC.isDone(); currentTime = currentTime.add(timeUnit)) {
-      try {
-        initPC.updateState(timeUnit);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+    for (BigDecimal currentTime = new BigDecimal(0); !initPC.isDone(); currentTime = currentTime.add(BigDecimal.ONE)) {
+      initPC.updateState(BigDecimal.ONE);
       addPCStateToLog(sbLog, currentTime, pcList);
     }
 
@@ -73,7 +68,7 @@ public class Simulation {
 
     try (PrintWriter out = new PrintWriter(resultFileName)) {
       out.println(sbLog);
-      System.out.println("Simulation for \"" + fileName + "\" is done. Result in \"" + resultFileName + "\"");
+      System.out.println("Simulation is done. Result saved into \"" + resultFileName + "\"");
     } catch (Exception e) {
       System.out.println("Error while saving result for \"" + fileName + "\"");
     }
